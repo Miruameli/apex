@@ -1,10 +1,11 @@
 {
   "packages": {
     ".": {
-      "release-type": "rust",
+      "release-type": "simple",
       "extra-files": [
-        "pyproject.toml",
-        "tui/deno.json"
+        { "path": "Cargo.toml", "type": "toml", "jsonpath": "$.workspace.package.version" },
+        { "path": "pyproject.toml", "type": "toml", "jsonpath": "$.project.version" },
+        { "path": "tui/deno.json", "type": "json", "jsonpath": "$.version" }
       ],
       "include-component-in-tags": false,
       "tag-separator": "-",
