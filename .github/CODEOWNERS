@@ -1,0 +1,27 @@
+# Default owner for all files
+* @Miruameli
+
+# Rust source files
+crates/ @Miruameli
+Cargo.toml @Miruameli
+Cargo.lock @Miruameli
+
+# Python source files
+apex/ @Miruameli
+pyproject.toml @Miruameli
+
+# TypeScript/Deno TUI
+tui/ @Miruameli
+
+# Documentation
+docs/ @Miruameli
+
+# Scripts and checks
+scripts/ @Miruameli
+
+# CI/CD workflows
+.github/ @Miruameli
+
+# Build and config files
+deno.lock @Miruameli
+.gitleaks.toml @Miruameli
