@@ -1,0 +1,13 @@
+[package]
+name = "apex-cli"
+version.workspace = true
+edition = "2024"
+license = "MIT"
+
+[[bin]]
+name = "apex"
+path = "src/main.rs"
+
+[dependencies]
+apex-core = { path = "../apex-core" }
+clap = { version = "4", features = ["derive"] }

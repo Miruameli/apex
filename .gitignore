@@ -1,0 +1,58 @@
+# Rust
+/target/
+**/*.rs.bk
+# Cargo.lock is intentionally tracked: binary workspace requires a committed
+# lockfile for reproducible builds. The release workflow (release-please +
+# release.yml) pins the exact dependency graph at release time.
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+.env.local
+.uv/
+uv.lock
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# TypeScript / Deno
+tui/node_modules/
+tui/deno.lock
+*.tsbuildinfo
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+
+# Apex specific
+.apex/
+*.log
+coverage/
+*.profraw
+
+# Test outputs
+test-results/
+*.lcov
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Local config (use .example files)
+apex.json
+APEX.md

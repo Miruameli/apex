@@ -1,0 +1,217 @@
+# Quality Gate Workflow
+#
+# Runs on every push and PR to main.
+# Gates: lint/format, docs links, modularization, tests (3 languages), security.
+# All jobs must pass for merge.
+
+name: Quality Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+env:
+  RUST_VERSION: stable
+  PYTHON_VERSION: "3.12"
+  DENO_VERSION: "2.x"
+
+jobs:
+  # ============================================================================
+  # RUST: fmt, clippy, build, test
+  # ============================================================================
+  rust:
+    name: Rust (fmt, clippy, build, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+        with:
+          components: rustfmt, clippy
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c
+      - name: Check formatting
+        run: cargo fmt --check --workspace
+      - name: Clippy (deny warnings)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Build workspace
+        run: cargo build --workspace
+      - name: Run tests
+        run: cargo test --workspace
+
+  # ============================================================================
+  # PYTHON: ruff format, ruff check, pytest
+  # ============================================================================
+  python:
+    name: Python (ruff, pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+        with:
+          version: "latest"
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Sync dependencies
+        run: uv sync --all-extras
+      - name: Ruff format check
+        run: uv run ruff format --check .
+      - name: Ruff lint
+        run: uv run ruff check .
+      - name: Run pytest
+        run: uv run pytest -q
+      - name: Version consistency check
+        run: uv run python scripts/checks/check_versions.py
+
+  # ============================================================================
+  # TYPESCRIPT (DENO): fmt, lint, check, test
+  # ============================================================================
+  typescript:
+    name: TypeScript/Deno (fmt, lint, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Setup Deno
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: ${{ env.DENO_VERSION }}
+      - name: Cache dependencies
+        run: deno cache tui/src/main.ts
+      - name: Deno fmt check
+        run: deno fmt --check tui/src
+      - name: Deno lint
+        run: deno lint tui/src
+      - name: Deno type check
+        run: deno check tui/src/main.ts
+      - name: Deno test
+        run: deno test --allow-all tui/src
+
+  # ============================================================================
+  # DOCS: check links
+  # ============================================================================
+  docs-links:
+    name: Docs Links Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Run check_docs_links.py
+        run: uv run python scripts/checks/check_docs_links.py
+
+  # ============================================================================
+  # MODULARIZATION: check structure
+  # ============================================================================
+  modularization:
+    name: Modularization Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Run check_modularization.py
+        run: uv run python scripts/checks/check_modularization.py
+
+  # ============================================================================
+  # SECURITY: gitleaks, cargo audit, pip-audit
+  # ============================================================================
+  security:
+    name: Security Scans
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc
+        with:
+          config: .gitleaks.toml
+          args: "--source . --no-banner --redact"
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c
+      - name: cargo audit
+        run: |
+          cargo install cargo-audit --locked
+          cargo audit --deny warnings
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Sync dependencies
+        run: uv sync --all-extras
+      - name: pip-audit
+        run: |
+          uv pip install pip-audit
+          uv run pip-audit -r <(uv export --format=requirements-txt)
+
+  # ============================================================================
+  # PROTOCOL FIXTURES: cross-language contract test
+  # ============================================================================
+  protocol-fixtures:
+    name: Protocol Fixtures Round-trip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c
+      - name: Rust protocol test
+        run: cargo test -p apex-core protocol_roundtrip
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Sync dependencies
+        run: uv sync --all-extras
+      - name: Python protocol test
+        run: uv run pytest tests/python/test_protocol.py -v
+      - name: Setup Deno
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: ${{ env.DENO_VERSION }}
+      - name: TypeScript protocol test
+        run: deno test --allow-all tui/src/protocol_test.ts
+
+  # ============================================================================
+  # FINAL: aggregate status
+  # ============================================================================
+  quality-gate:
+    name: Quality Gate Summary
+    needs:
+      - rust
+      - python
+      - typescript
+      - docs-links
+      - modularization
+      - security
+      - protocol-fixtures
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.rust.result }}" != "success" ]] ||
+             [[ "${{ needs.python.result }}" != "success" ]] ||
+             [[ "${{ needs.typescript.result }}" != "success" ]] ||
+             [[ "${{ needs.docs-links.result }}" != "success" ]] ||
+             [[ "${{ needs.modularization.result }}" != "success" ]] ||
+             [[ "${{ needs.security.result }}" != "success" ]] ||
+             [[ "${{ needs.protocol-fixtures.result }}" != "success" ]]; then
+            echo "❌ Quality gate FAILED"
+            exit 1
+          fi
+          echo "✅ Quality gate PASSED"

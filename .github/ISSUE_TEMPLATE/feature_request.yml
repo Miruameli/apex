@@ -1,0 +1,96 @@
+name: Feature Request
+description: Usulkan fitur atau perbaikan baru
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Terima kasih sudah mengusulkan fitur. Jelaskan masalah yang ingin diselesaikan dan solusi yang diusulkan.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah (Problem Statement)
+      description: Apa yang menyakitkan atau tidak mungkin dilakukan saat ini?
+      placeholder: |
+        Saat ini `apex context` tidak mendukung filtering berdasarkan git status (modified/added/untracked).
+        User ingin scan hanya file yang berubah sejak commit terakhir.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solusi yang Diusulkan
+      description: Bagaimana fitur ini seharusnya bekerja? (CLI flags, config, behavior)
+      placeholder: |
+        Tambah flag `--git-status modified,added` ke `apex context`.
+        Default: semua file (behavior existing).
+        Output hanya entry yang match status.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatif yang Dipertimbangkan
+      description: Solusi lain yang sudah dipertimbangkan dan alasan ditolak
+      placeholder: |
+        1. Filter di post-processing (shell pipe) — lambat untuk repo besar
+        2. Config file option — kurang fleksibel untuk one-off usage
+        3. Environment variable — tidak discoverable
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Komponen Terkait
+      options:
+        - "CLI (apex-cli)"
+        - "TUI (tui)"
+        - "Python Agent (apex/agent)"
+        - "Rust Core (apex-core)"
+        - "Bridge (PyO3)"
+        - "Skill System"
+        - "MCP"
+        - "Protocol/IPC"
+        - "Context Scan"
+        - "Review/Commit/Ship"
+        - "Build/CI"
+        - "Documentation"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioritas
+      options:
+        - "P0 - Critical (blocking release)"
+        - "P1 - High (MVP scope)"
+        - "P2 - Medium (V1 scope)"
+        - "P3 - Low (nice to have, backlog)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Konteks Tambahan
+      description: Mockup, referensi, link issue terkait, dll.
+      placeholder: |
+        Referensi: lazygit memiliki filter serupa dengan `git status --short`.
+        Issue terkait: #123 (context scan performance)
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: Sudah cek roadmap (docs/operations/governance/12-roadmap.md) apakah fitur ini sudah direncanakan
+          required: true
+        - label: Sudah cek issue existing (search sebelum buka baru)
+          required: true
+        - label: Siap berkontribusi implementasi (atau butuh bantuan)
+          required: false

@@ -1,0 +1,50 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.0
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt --check
+        entry: uv run cargo fmt --all -- --check
+        language: system
+        types: [rust]
+        pass_filenames: false
+      - id: clippy
+        name: cargo clippy
+        entry: uv run cargo clippy --workspace --all-targets -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false
+      - id: deno-fmt
+        name: deno fmt --check
+        entry: deno fmt --check tui/src
+        language: system
+        types: [typescript]
+        pass_filenames: false
+      - id: deno-lint
+        name: deno lint
+        entry: deno lint tui/src
+        language: system
+        types: [typescript]
+        pass_filenames: false
+      - id: modularization
+        name: check_modularization.py
+        entry: uv run python scripts/checks/check_modularization.py
+        language: system
+        types: [python,rust,typescript]
+        pass_filenames: false
+      - id: docs-links
+        name: check_docs_links.py
+        entry: uv run python scripts/checks/check_docs_links.py
+        language: system
+        types: [markdown]
+        pass_filenames: false
+      - id: versions
+        name: check_versions.py
+        entry: uv run python scripts/checks/check_versions.py
+        language: system
+        types: [python,rust,typescript,markdown]
+        pass_filenames: false

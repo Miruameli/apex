@@ -1,0 +1,71 @@
+# Gitleaks Configuration
+#
+# Secret detection for CI and pre-commit.
+# Run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
+
+[allowlist]
+# Allowlist uses plain string array (NOT [allowlist.stopwords] table!)
+# Table form fails to decode and gitleaks exits 0 silently (false negative).
+stopwords = [
+    "example",
+    "test",
+    "dummy",
+    "placeholder",
+    "fake",
+    "mock",
+    "sample",
+    "your_api_key",
+    "your_secret",
+    "sk-xxxxx",
+    "ghp_xxxxx",
+    "glpat_xxxxx",
+]
+
+# Custom rules for Apex-specific patterns
+[[rules]]
+id = "anthropic-api-key"
+description = "Anthropic API Key"
+regex = '''(?i)anthropic[_-]?api[_-]?key['"]?\s*[:=]\s*['"]?sk-ant-api03-[a-zA-Z0-9_-]{95}'''
+tags = ["key", "anthropic", "api"]
+
+[[rules]]
+id = "openai-api-key"
+description = "OpenAI API Key"
+regex = '''(?i)openai[_-]?api[_-]?key['"]?\s*[:=]\s*['"]?sk-[a-zA-Z0-9]{48}'''
+tags = ["key", "openai", "api"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub Personal Access Token"
+regex = '''(?i)github[_-]?token['"]?\s*[:=]\s*['"]?gh[pousr]_[a-zA-Z0-9]{36}'''
+tags = ["key", "github", "token"]
+
+[[rules]]
+id = "gitlab-token"
+description = "GitLab Personal Access Token"
+regex = '''(?i)gitlab[_-]?token['"]?\s*[:=]\s*['"]?glpat-[a-zA-Z0-9_-]{20}'''
+tags = ["key", "gitlab", "token"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key Pattern"
+regex = '''(?i)api[_-]?key['"]?\s*[:=]\s*['"]?[a-zA-Z0-9_-]{32,}'''
+tags = ["key", "api"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key (PEM)"
+regex = '''-----BEGIN (RSA|DSA|EC|OPENSSH|PGP) PRIVATE KEY-----'''
+tags = ["key", "private", "pem"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''(?i)aws[_-]?access[_-]?key[_-]?id['"]?\s*[:=]\s*['"]?AKIA[0-9A-Z]{16}'''
+tags = ["key", "aws"]
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Access Key"
+regex = '''(?i)aws[_-]?secret[_-]?access[_-]?key['"]?\s*[:=]\s*['"]?[a-zA-Z0-9/+=]{40}'''
+tags = ["key", "aws"]

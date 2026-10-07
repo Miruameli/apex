@@ -1,0 +1,84 @@
+# APEX.md — Project Memory
+
+File ini dibaca oleh Apex agent di setiap sesi untuk memahami konteks proyek, preferensi, dan aturan spesifik.
+
+---
+
+## Project Overview
+
+**Name**: [Nama proyek]
+**Type**: [library / application / service / CLI tool]
+**Primary Language**: [Rust / Python / TypeScript / Other]
+**Target**: [Beskarikan target audience/use case]
+
+---
+
+## Architecture Decisions
+
+- [Keputusan arsitektur penting yang harus diingat agent]
+- [Contoh: "Gunakan repository pattern untuk data access"]
+- [Contoh: "Semua error handling lewat Result type, no panic"]
+
+---
+
+## Code Style Preferences
+
+- **Naming**: [snake_case / camelCase / PascalCase per bahasa]
+- **Max line length**: [100 / 120 / other]
+- **Import organization**: [stdlib → third-party → local]
+- **Error handling**: [Result/Option / exceptions / error codes]
+- **Testing**: [unit + integration / property-based / snapshot]
+
+---
+
+## Domain Knowledge
+
+### Key Concepts
+- **[Konsep 1]**: [Definisi singkat]
+- **[Konsep 2]**: [Definisi singkat]
+
+### Important Files/Directories
+- `src/domain/` — [Penjelasan]
+- `src/application/` — [Penjelasan]
+- `tests/fixtures/` — [Penjelasan]
+
+### Common Patterns
+- **[Pola 1]**: [Kapan digunakan, contoh]
+- **[Pola 2]**: [Kapan digunakan, contoh]
+
+---
+
+## Business Rules
+
+- [Aturan bisnis yang harus diikuti agent saat mengubah kode]
+- [Contoh: "User tidak bisa hapus data jika masih ada relasi aktif"]
+- [Contoh: "Semua transaksi finansial butuh audit log"]
+
+---
+
+## Preferences for Agent
+
+- **Verbosity**: [terse / normal / verbose]
+- **Proactive suggestions**: [yes / no]
+- **Auto-fix style issues**: [yes / no]
+- **Run tests after edits**: [yes / no]
+- **Commit after successful task**: [yes / no]
+
+---
+
+## Known Issues / Technical Debt
+
+- [Issue 1]: [Lokasi, dampak, rencana perbaikan]
+- [Issue 2]: [Lokasi, dampak, rencana perbaikan]
+
+---
+
+## Contacts / References
+
+- **Owner**: [Nama/email]
+- **Docs**: [Link ke docs internal/eksternal]
+- **Related repos**: [Link ke repo terkait]
+
+---
+
+> **Catatan**: Update file ini saat ada perubahan signifikan pada arsitektur, konvensi, atau domain knowledge. Agent akan membaca ini di awal setiap sesi.

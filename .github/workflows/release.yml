@@ -1,0 +1,80 @@
+# Release Workflow
+#
+# Triggered by tag push (v*). The tag is created automatically by
+# release-please when its release PR (opened by release-please.yml) is merged.
+# This workflow builds platform binaries, generates checksums + SBOM, and
+# publishes the GitHub Release with artifacts attached.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+env:
+  RUST_VERSION: stable
+  PYTHON_VERSION: "3.12"
+  DENO_VERSION: "2.x"
+
+jobs:
+  build-and-release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@49a0bdc70d2e1b713ca9e2869b211fcce03d3c1c
+      - name: Build release
+        run: cargo build --workspace --release --locked
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+      - name: Set up Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
+      - name: Sync dependencies
+        run: uv sync --all-extras
+      - name: Build Python bridge
+        run: uv run python scripts/sync_apex_py.py --release
+      - name: Setup Deno
+        uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: ${{ env.DENO_VERSION }}
+      - name: Deno compile (TUI binary)
+        run: deno compile --allow-all --output apex-tui tui/src/main.ts
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          cp target/release/apex dist/apex-linux-x86_64
+          cp target/release/libapex_py.so dist/apex_py-linux-x86_64.so 2>/dev/null || true
+          cp apex-tui dist/apex-tui-linux-x86_64 2>/dev/null || true
+      - name: Generate checksums
+        run: |
+          cd dist
+          sha256sum * > checksums.txt
+          cat checksums.txt
+      - name: Generate SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
+        with:
+          path: .
+          format: spdx-json
+          output-file: dist/sbom.spdx.json
+      - name: Publish Release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+        with:
+          files: |
+            dist/*
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

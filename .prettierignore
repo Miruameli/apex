@@ -1,0 +1,7 @@
+# Exclude docs from prettier (they use Indonesian, not English formatting)
+docs/
+
+# Exclude generated files
+target/
+**/*.rs.bk
+*.lock

@@ -1,0 +1,73 @@
+# Dependabot Configuration
+#
+# Automated dependency updates for all ecosystems.
+# PRs grouped by ecosystem, scheduled weekly.
+
+version: 2
+updates:
+  # Rust (Cargo)
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    cooldown:
+      default-days: 7
+    groups:
+      rust-deps:
+        patterns: ["*"]
+    commit-message:
+      prefix: "build(cargo)"
+    labels:
+      - "dependencies"
+      - "rust"
+    open-pull-requests-limit: 10
+
+  # Python (uv/pip)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+    cooldown:
+      default-days: 7
+    groups:
+      python-deps:
+        patterns: ["*"]
+    commit-message:
+      prefix: "build(python)"
+    labels:
+      - "dependencies"
+      - "python"
+    open-pull-requests-limit: 10
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "build(ci)"
+    labels:
+      - "dependencies"
+      - "ci"
+    open-pull-requests-limit: 5
+
+  # Docker (if/when we add Dockerfiles)
+  # - package-ecosystem: "docker"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
+  #     day: "monday"
+  #     time: "10:30"
+  #   commit-message:
+  #     prefix: "build(docker)"
+  #   labels:
+  #     - "dependencies"
+  #     - "docker"

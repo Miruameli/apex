@@ -1,0 +1,13 @@
+[package]
+name = "apex-py"
+version.workspace = true
+edition = "2024"
+license = "MIT"
+
+[lib]
+name = "apex_py"
+crate-type = ["cdylib"]
+
+[dependencies]
+apex-core = { path = "../apex-core" }
+pyo3 = { version = "0.25", features = ["extension-module"] }

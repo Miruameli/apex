@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "apex"
+version = "0.1.0"
+description = "Terminal AI coding agent — brain package"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = ["pydantic>=2.5"]
+
+[project.scripts]
+apex = "apex.bridge:bridge"
+
+[tool.uv]
+package = false
+# Supply-chain hardening: wait 7 days before resolving a freshly published
+# version, so a compromised upload cannot land in the lockfile on day one.
+exclude-newer = "7 days"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6", "pytest-cov>=6"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+# Markdown snippets in docs are illustrative, not compiled. Formatting them
+# would rewrite examples that intentionally show unformatted or invalid code.
+extend-exclude = ["docs"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+# Measure the shipped package only; tests exercise it, they are not the
+# subject of the measurement.
+source = ["apex"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

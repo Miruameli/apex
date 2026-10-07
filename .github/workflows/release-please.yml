@@ -1,0 +1,47 @@
+# Auto-release workflow — bump version, update changelog, create release PR.
+#
+# Triggers on push to main. Release-please analyzes conventional commits since
+# the last release tag, determines the next SemVer bump (breaking! / feat / fix),
+# updates version strings in Cargo.toml, pyproject.toml, and tui/deno.json,
+# rewrites CHANGELOG.md, and opens a release PR.
+#
+# When the PR is merged, release-please pushes a git tag — which in turn fires
+# release.yml to build and publish platform binaries.
+#
+# This eliminates the need to manually edit version numbers for every small
+# fix or feature: commit with a conventional message and let release-please
+# handle the rest.
+#
+# To make releases fully hands-off, enable "auto-merge" on the release-please
+# PRs via GitHub branch protection rules.
+
+name: Auto Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release Please — version bump + changelog
+        uses: google-github-actions/release-please-action@e4dc86ba9405554aeba3c6bb2d169500e7d3b4ee  # v4.1.1
+        with:
+          config-file: .release-please-manifest.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+          create-pull-request: true
+          tag-prefix: v
+          skip-github-release: true
+          immutable-tags: true

@@ -1,0 +1,53 @@
+{
+  "provider": {
+    "name": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "api_key_env": "ANTHROPIC_API_KEY",
+    "base_url": "",
+    "max_tokens": 8192,
+    "temperature": 0.1
+  },
+  "ui": {
+    "language": "en",
+    "theme": "dark",
+    "show_line_numbers": true,
+    "compact_mode": false
+  },
+  "context": {
+    "max_file_size_kb": 512,
+    "max_total_size_mb": 4,
+    "include_hidden": false,
+    "follow_symlinks": false,
+    "extra_ignores": [],
+    "languages": []
+  },
+  "review_rules": {
+    "security": true,
+    "performance": true,
+    "clean_code": true,
+    "custom_rules": []
+  },
+  "skills": {
+    "enabled": true,
+    "auto_approve_trusted": false,
+    "timeout_seconds": 30
+  },
+  "mcp": {
+    "enabled": true,
+    "servers": {}
+  },
+  "sandbox": {
+    "level": 1,
+    "docker_image": "apex/sandbox:latest",
+    "resource_limits": {
+      "cpu": "1.0",
+      "memory": "2g",
+      "pids": 100
+    }
+  },
+  "git": {
+    "auto_stage": false,
+    "sign_commits": true,
+    "commit_template": "conventional"
+  }
+}
