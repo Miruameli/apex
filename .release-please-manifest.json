@@ -1,9 +1,10 @@
 {
   "packages": {
     ".": {
-      "release-type": "rust",
+      "release-type": "simple",
       "extra-files": [
         "pyproject.toml",
+        "Cargo.toml",
         "tui/deno.json"
       ],
       "include-component-in-tags": false,
