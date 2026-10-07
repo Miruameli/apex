@@ -40,6 +40,6 @@ jobs:
       - name: Release Please — version bump + changelog
         uses: google-github-actions/release-please-action@e4dc86ba9405554aeba3c6bb2d169500e7d3b4ee  # v4.1.1
         with:
-          config-file: .release-please-manifest.json
+          config-file: release-please-config.json
           token: ${{ secrets.GITHUB_TOKEN }}
           skip-github-release: true

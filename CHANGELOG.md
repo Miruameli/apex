@@ -30,8 +30,10 @@ dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   — bumps version across `Cargo.toml`, `pyproject.toml`, and `tui/deno.json`
   from conventional commits, rewrites `CHANGELOG.md`, and opens a release PR
   on every push to `main`. Eliminates manual version editing for small fixes.
-- `.release-please-manifest.json` — manifest mapping all three language
-  manifests into a single version-bump operation
+- `release-please-config.json` — config file: `release-type: "rust"` with
+    `extra-files` for `pyproject.toml` and `tui/deno.json` (Rust plugin reads
+    version from `[package]` in root `Cargo.toml`); `.release-please-manifest.json`
+    tracks released versions per path
 - `scripts/checks/check_versions.py` — verifies version strings are consistent across
   all three language manifests; added to `scripts/verify.sh` quality gate
 - Release checklist auto-release note
