@@ -146,12 +146,15 @@ jobs:
     permissions:
       contents: read
       security-events: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
       - name: Run gitleaks
         uses: gitleaks/gitleaks-action@v3.0.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Rust
         uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
       - name: Cache cargo
