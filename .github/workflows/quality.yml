@@ -143,15 +143,15 @@ jobs:
   security:
     name: Security Scans
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
       - name: Run gitleaks
-        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc
-        with:
-          config: .gitleaks.toml
-          args: "--source . --no-banner --redact"
+        uses: gitleaks/gitleaks-action@v3.0.0
       - name: Install Rust
         uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
       - name: Cache cargo
