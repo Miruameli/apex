@@ -97,13 +97,13 @@ jobs:
         with:
           deno-version: ${{ env.DENO_VERSION }}
       - name: Cache dependencies
-        run: deno cache tui/src/main.ts
+        run: deno cache tui/src/interfaces/main.ts
       - name: Deno fmt check
         run: deno fmt --check tui/src
       - name: Deno lint
         run: deno lint tui/src
       - name: Deno type check
-        run: deno check tui/src/main.ts
+        run: deno check tui/src/interfaces/main.ts
       - name: Deno test
         run: deno test --allow-all tui/src
 
