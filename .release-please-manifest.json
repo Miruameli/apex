@@ -1,7 +1,7 @@
 {
   "packages": {
     ".": {
-      "release-type": "simple",
+      "release-type": "rust",
       "extra-files": [
         "pyproject.toml",
         "Cargo.toml",
