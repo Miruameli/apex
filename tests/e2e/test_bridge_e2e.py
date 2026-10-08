@@ -22,10 +22,25 @@ def test_core_hello_returns_exact_greeting() -> None:
 
 
 def test_core_version_matches_rust() -> None:
-    """Python must report the same version Rust reports."""
+    """Python must report the same version Rust reports.
+
+    Reads the expected version from ``Cargo.toml`` — the Rust source of
+    truth that release-please updates — so that version bumps do not
+    require manual test edits.
+    """
+    import re
+    from pathlib import Path
+
     import apex_py
 
-    assert apex_py.core_version() == "0.1.0"
+    cargo_toml = Path(__file__).resolve().parents[2] / "Cargo.toml"
+    m = re.search(
+        r'^version\s*=\s*"([^"]+)"',
+        cargo_toml.read_text(encoding="utf-8"),
+        re.MULTILINE,
+    )
+    assert m is not None, "version not found in Cargo.toml"
+    assert apex_py.core_version() == m.group(1)
 
 
 def test_rust_tests_validate_bridge_surface() -> None:
