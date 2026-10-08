@@ -54,7 +54,7 @@ dependencies = [
 
 [[package]]
 name = "apex-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "apex-core",
  "clap",
@@ -62,7 +62,7 @@ dependencies = [
 
 [[package]]
 name = "apex-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "serde_json",
@@ -71,7 +71,7 @@ dependencies = [
 
 [[package]]
 name = "apex-py"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "apex-core",
  "pyo3",
