@@ -34,7 +34,7 @@ run_step 'import bridge'        uv run python -c 'import apex; print(apex.core_h
 run_step 'rust tests'           uv run cargo test --workspace
 run_step 'deno lint'            deno lint tui/src
 run_step 'deno fmt'             deno fmt --check tui/src
-run_step 'deno check'           deno check tui/src/main.ts
+run_step 'deno check'            deno check tui/src/interfaces/main.ts
 run_step 'ts tests'             deno test --allow-all tui/src
 run_step 'python tests'         uv run pytest -q
 run_step 'ruff lint'            uv run ruff check .

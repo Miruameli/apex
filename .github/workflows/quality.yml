@@ -97,13 +97,13 @@ jobs:
         with:
           deno-version: ${{ env.DENO_VERSION }}
       - name: Cache dependencies
-        run: deno cache tui/src/main.ts
+        run: deno cache tui/src/interfaces/main.ts
       - name: Deno fmt check
         run: deno fmt --check tui/src
       - name: Deno lint
         run: deno lint tui/src
       - name: Deno type check
-        run: deno check tui/src/main.ts
+        run: deno check tui/src/interfaces/main.ts
       - name: Deno test
         run: deno test --allow-all tui/src
 
@@ -143,15 +143,18 @@ jobs:
   security:
     name: Security Scans
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
       - name: Run gitleaks
-        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc
-        with:
-          config: .gitleaks.toml
-          args: "--source . --no-banner --redact"
+        uses: gitleaks/gitleaks-action@v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Rust
         uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
       - name: Cache cargo

@@ -1,13 +1,13 @@
 {
   "name": "@apex/tui",
   "version": "0.1.0",
-  "exports": "./src/main.ts",
+  "exports": "./src/interfaces/main.ts",
   "imports": {
     "@std/assert": "jsr:@std/assert@1.0.19"
   },
   "tasks": {
-    "start": "deno run --allow-all src/main.ts",
+    "start": "deno run --allow-all src/interfaces/main.ts",
     "test": "deno test --allow-all src/",
-    "check": "deno check src/main.ts"
+    "check": "deno check src/interfaces/main.ts"
   }
 }

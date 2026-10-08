@@ -1,9 +1,9 @@
 /** Round-trip fixtures and reject everything outside the contract. */
 
 import { assertEquals, assertThrows } from "@std/assert";
-import { parseEvent, parseRequest, ProtocolError } from "./parse.ts";
+import { parseEvent, parseRequest, ProtocolError } from "./parser.ts";
 
-const ROOT = new URL("../../tests/fixtures/protocol/", import.meta.url);
+const ROOT = new URL("../../../tests/fixtures/protocol/", import.meta.url);
 
 async function roundTrip(
   dir: string,
