@@ -38,7 +38,7 @@ jobs:
       - name: Build release
         run: cargo build --workspace --release --locked
       - name: Install uv
-        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+        uses: astral-sh/setup-uv@caf0cab7a618c569241d31dcd442f54681755d39
       - name: Set up Python
         run: uv python install ${{ env.PYTHON_VERSION }}
       - name: Sync dependencies
